@@ -16,22 +16,32 @@ func init() {
 	)
 	var newProfile = types.HttpServerPort{
 		SilentRoute: true,
-		Name:        "profile",
-		Path:        "profile",
+		Name:        "profiles",
+		Path:        "profiles",
 		Verb:        types.POST,
 		Adapter:     adapters.Fiber,
 		Controller:  profileController.CreateNewProfile,
 	}
 
-	var GetProfile = types.HttpServerPort{
+	var GetProfileById = types.HttpServerPort{
 		SilentRoute: true,
-		Name:        "profile",
-		Path:        "profile/:id",
+		Name:        "profiles",
+		Path:        "profiles/:id",
 		Verb:        types.GET,
 		Adapter:     adapters.Fiber,
 		Controller:  profileController.GetById,
 	}
 
+	var GetAllProfile = types.HttpServerPort{
+		SilentRoute: true,
+		Name:        "profiles",
+		Path:        "profiles",
+		Verb:        types.GET,
+		Adapter:     adapters.Fiber,
+		Controller:  profileController.GetAll,
+	}
+
 	newProfile.Start()
-	GetProfile.Start()
+	GetProfileById.Start()
+	GetAllProfile.Start()
 }

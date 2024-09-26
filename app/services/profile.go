@@ -31,5 +31,5 @@ func (ps *profileService) GetByID(id int) (*types.Profile, error) {
 }
 
 func (ps *profileService) GetAll() []types.Profile {
-	return []types.Profile{}
+	return ps.repo.GetAll()
 }

@@ -58,3 +58,8 @@ func (pc *profileController) GetById(requestData pgk_types.RequestData) (interfa
 	return profile, nil
 
 }
+
+func (pc *profileController) GetAll(requestData pgk_types.RequestData) (interface{}, *errors.HttpError) {
+	profiles := pc.ps.GetAll()
+	return profiles, nil
+}
