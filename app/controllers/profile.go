@@ -49,7 +49,7 @@ func (pc *profileController) GetById(requestData pgk_types.RequestData) (interfa
 		return nil, errors.NewHttpError(fmt.Errorf("int id expected in path"), 400)
 	}
 
-	profile, err := pc.ps.GetByID(intId)
+	profile, err := pc.ps.GetByID(uint64(intId))
 
 	if err != nil {
 		return nil, errors.NewHttpError(fmt.Errorf("profile not fo0und"), 404)

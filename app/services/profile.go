@@ -15,7 +15,7 @@ func NewProfileService(repo repository.IProfileRepository) *profileService {
 	}
 }
 
-func (ps *profileService) Save(profile types.ProfileHttpRequest) (int, error) {
+func (ps *profileService) Save(profile types.ProfileHttpRequest) (uint64, error) {
 	newProfile := types.Profile{
 		Email:     profile.Email,
 		Firstname: profile.Firstname,
@@ -26,7 +26,7 @@ func (ps *profileService) Save(profile types.ProfileHttpRequest) (int, error) {
 	return savedProfileId, err
 }
 
-func (ps *profileService) GetByID(id int) (*types.Profile, error) {
+func (ps *profileService) GetByID(id uint64) (*types.Profile, error) {
 	return ps.repo.GetByID(id)
 }
 

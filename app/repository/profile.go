@@ -10,7 +10,7 @@ import (
 type inMemoryProfileRepository struct {
 	profiles []types.Profile
 	mu       sync.Mutex // to ensure thread-safe operations
-	nextID   int        // auto-incrementing ID
+	nextID   uint64     // auto-incrementing ID
 }
 
 // NewInMemoryRepository creates a new InMemoryRepository
@@ -22,7 +22,7 @@ func NewInMemoryRepository() *inMemoryProfileRepository {
 }
 
 // Save adds a new profile to the repository
-func (r *inMemoryProfileRepository) Save(profile types.Profile) (int, error) {
+func (r *inMemoryProfileRepository) Save(profile types.Profile) (uint64, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -36,7 +36,7 @@ func (r *inMemoryProfileRepository) Save(profile types.Profile) (int, error) {
 }
 
 // GetByID retrieves a profile by its ID
-func (r *inMemoryProfileRepository) GetByID(id int) (*types.Profile, error) {
+func (r *inMemoryProfileRepository) GetByID(id uint64) (*types.Profile, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
