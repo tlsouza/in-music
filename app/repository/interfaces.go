@@ -7,3 +7,9 @@ type IProfileRepository interface {
 	GetByID(id int) (*types.Profile, error)
 	GetAll() []types.Profile
 }
+
+type IProductRepository interface {
+	Save(product types.Product) (string, error)
+	GetBySku(sku string) (*types.Product, error)
+	GetAll() []types.Product
+}

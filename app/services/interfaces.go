@@ -7,3 +7,9 @@ type IProfileService interface {
 	GetByID(id int) (*types.Profile, error)
 	GetAll() []types.Profile
 }
+
+type IProductService interface {
+	Save(types.Product) (string, error)
+	GetBySku(sku string) (*types.Product, error)
+	GetAll() []types.Product
+}

@@ -14,3 +14,7 @@ type ProfileHttpRequest struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 }
+
+type Product struct {
+	SKU string `json:"SKU"`
+}
