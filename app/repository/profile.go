@@ -6,23 +6,39 @@ import (
 	"sync"
 )
 
+var lockProfileRepository = &sync.Mutex{}
+var singleProfileRepositoryInstance *ProfileRepository
+
 // InMemoryRepository struct implementing Repository interface
-type inMemoryProfileRepository struct {
+type ProfileRepository struct {
 	profiles []types.Profile
 	mu       sync.Mutex // to ensure thread-safe operations
 	nextID   uint64     // auto-incrementing ID
 }
 
+func GetProfileRepositoryInstance() *ProfileRepository {
+	if singleProfileRepositoryInstance == nil {
+		lockProfileRepository.Lock()
+		defer lockProfileRepository.Unlock()
+		if singleProfileRepositoryInstance == nil {
+			singleProfileRepositoryInstance = &ProfileRepository{
+				profiles: []types.Profile{},
+			}
+		}
+	}
+	return singleProfileRepositoryInstance
+}
+
 // NewInMemoryRepository creates a new InMemoryRepository
-func NewInMemoryRepository() *inMemoryProfileRepository {
-	return &inMemoryProfileRepository{
+func NewInMemoryRepository() *ProfileRepository {
+	return &ProfileRepository{
 		profiles: []types.Profile{},
 		nextID:   1, // starting ID
 	}
 }
 
 // Save adds a new profile to the repository
-func (r *inMemoryProfileRepository) Save(profile types.Profile) (uint64, error) {
+func (r *ProfileRepository) Save(profile types.Profile) (uint64, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -36,7 +52,7 @@ func (r *inMemoryProfileRepository) Save(profile types.Profile) (uint64, error) 
 }
 
 // GetByID retrieves a profile by its ID
-func (r *inMemoryProfileRepository) GetByID(id uint64) (*types.Profile, error) {
+func (r *ProfileRepository) GetByID(id uint64) (*types.Profile, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -49,7 +65,7 @@ func (r *inMemoryProfileRepository) GetByID(id uint64) (*types.Profile, error) {
 }
 
 // GetAll retrieves all profiles
-func (r *inMemoryProfileRepository) GetAll() []types.Profile {
+func (r *ProfileRepository) GetAll() []types.Profile {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

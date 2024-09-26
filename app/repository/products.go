@@ -3,7 +3,6 @@ package repository
 import (
 	"api/app/types"
 	"errors"
-	"fmt"
 	"sync"
 )
 
@@ -22,13 +21,11 @@ func GetProductRepositoryInstance() *ProductRepository {
 		lockProductRepository.Lock()
 		defer lockProductRepository.Unlock()
 		if singleProductRepositoryInstance == nil {
-			fmt.Println("Creating single instance now.")
 			singleProductRepositoryInstance = &ProductRepository{
 				products: []types.Product{},
 			}
 		}
 	}
-
 	return singleProductRepositoryInstance
 }
 
