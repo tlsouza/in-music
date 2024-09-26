@@ -11,7 +11,7 @@ import (
 func init() {
 	productController := controllers.NewProductController(
 		services.NewProductService(
-			repository.NewInMemoryProductRepository(),
+			repository.GetProductRepositoryInstance(),
 		),
 	)
 

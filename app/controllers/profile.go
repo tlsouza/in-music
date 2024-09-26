@@ -63,3 +63,24 @@ func (pc *profileController) GetAll(requestData pgk_types.RequestData) (interfac
 	profiles := pc.ps.GetAll()
 	return profiles, nil
 }
+
+func (pc *profileController) CreateNewProductRegistration(requestData pgk_types.RequestData) (interface{}, *errors.HttpError) {
+	id, ok := requestData.PathParams["profile"]
+	if !ok {
+		return nil, errors.NewHttpError(fmt.Errorf("invalid id in path"), 400)
+	}
+
+	_, err := strconv.Atoi(id)
+
+	if err != nil {
+		return nil, errors.NewHttpError(fmt.Errorf("int id expected in path"), 400)
+	}
+
+	productRegistrationRequest, err := logic.Unmarshal[types.ProductRegistrationHttpRequest](requestData.BodyByte, requestData.Ctx)
+
+	if err != nil {
+		return nil, errors.NewHttpError(fmt.Errorf("invalid body structure"), 400)
+	}
+
+	return productRegistrationRequest, nil
+}

@@ -23,7 +23,7 @@ func NewProductController(ps services.IProductService) productController {
 func (pc *productController) CreateNewProduct(requestData pgk_types.RequestData) (interface{}, *errors.HttpError) {
 	product, err := logic.Unmarshal[types.Product](requestData.BodyByte, requestData.Ctx)
 
-	if err != nil {
+	if err != nil || product.SKU == nil {
 		return nil, errors.NewHttpError(fmt.Errorf("invalid body structure"), 400)
 	}
 

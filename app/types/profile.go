@@ -11,7 +11,7 @@ type Profile struct {
 }
 
 type Product struct {
-	SKU string `json:"SKU"`
+	SKU *string `json:"SKU"`
 }
 
 //Http requests structures
@@ -28,10 +28,10 @@ type ProductRegistrationHttpRequestChild struct {
 	SerialCode   string     `json:"serial_code"`
 }
 type ProductRegistrationHttpRequest struct {
-	PurchaseDate                   time.Time  `json:"purchase_date"`
-	ExpiryAt                       *time.Time `json:"expiry_at"`
-	Product                        Product    `json:"product"`
-	SerialCode                     string     `json:"serial_code"`
-	ProfileId                      uint64     `json:"profile_id"`
-	AdditionalProductRegistrations []ProductRegistrationHttpRequestChild
+	PurchaseDate                   time.Time                             `json:"purchase_date"`
+	ExpiryAt                       *time.Time                            `json:"expiry_at"`
+	Product                        Product                               `json:"product"`
+	SerialCode                     string                                `json:"serial_code"`
+	ProfileId                      uint64                                `json:"profile_id"`
+	AdditionalProductRegistrations []ProductRegistrationHttpRequestChild `json:"additional_product_registrations"`
 }

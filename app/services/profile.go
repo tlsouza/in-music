@@ -3,6 +3,8 @@ package services
 import (
 	"api/app/repository"
 	"api/app/types"
+	"api/pkg/errors"
+	"fmt"
 )
 
 type profileService struct {
@@ -32,4 +34,13 @@ func (ps *profileService) GetByID(id uint64) (*types.Profile, error) {
 
 func (ps *profileService) GetAll() []types.Profile {
 	return ps.repo.GetAll()
+}
+
+func (ps *profileService) AddProductRegistrations(profileId uint64, productRegistration types.ProductRegistrationHttpRequest) error {
+	_, err := ps.repo.GetByID(profileId)
+	if err != nil {
+		return errors.NewHttpError(fmt.Errorf("not found"), 404)
+	}
+
+	return nil
 }
