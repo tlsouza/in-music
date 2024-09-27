@@ -23,18 +23,11 @@ func GetProfileRepositoryInstance() *ProfileRepository {
 		if singleProfileRepositoryInstance == nil {
 			singleProfileRepositoryInstance = &ProfileRepository{
 				profiles: []types.Profile{},
+				nextID:   1,
 			}
 		}
 	}
 	return singleProfileRepositoryInstance
-}
-
-// NewInMemoryRepository creates a new InMemoryRepository
-func NewInMemoryRepository() *ProfileRepository {
-	return &ProfileRepository{
-		profiles: []types.Profile{},
-		nextID:   1, // starting ID
-	}
 }
 
 // Save adds a new profile to the repository

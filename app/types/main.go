@@ -32,6 +32,15 @@ type ProductRegistrationHttpRequest struct {
 	ExpiryAt                       *time.Time                            `json:"expiry_at"`
 	Product                        Product                               `json:"product"`
 	SerialCode                     string                                `json:"serial_code"`
-	ProfileId                      uint64                                `json:"profile_id"`
 	AdditionalProductRegistrations []ProductRegistrationHttpRequestChild `json:"additional_product_registrations"`
+}
+
+type ProductRegistration struct {
+	Id           uint64     `json:"id"`
+	PurchaseDate time.Time  `json:"purchase_date"`
+	ExpiryAt     *time.Time `json:"expiry_at"`
+	Product      Product    `json:"product"`
+	SerialCode   string     `json:"serial_code"`
+	ProfileId    *uint64    `json:"profile_id"`
+	ParentId     *uint64    `json:"parent_id"`
 }

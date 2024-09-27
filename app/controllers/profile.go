@@ -70,7 +70,7 @@ func (pc *profileController) CreateNewProductRegistration(requestData pgk_types.
 		return nil, errors.NewHttpError(fmt.Errorf("invalid id in path"), 400)
 	}
 
-	_, err := strconv.Atoi(id)
+	intId, err := strconv.Atoi(id)
 
 	if err != nil {
 		return nil, errors.NewHttpError(fmt.Errorf("int id expected in path"), 400)
@@ -82,5 +82,11 @@ func (pc *profileController) CreateNewProductRegistration(requestData pgk_types.
 		return nil, errors.NewHttpError(fmt.Errorf("invalid body structure"), 400)
 	}
 
-	return productRegistrationRequest, nil
+	ids, err := pc.ps.AddProductRegistration((uint64(intId)), productRegistrationRequest)
+
+	if err != nil {
+		return nil, errors.NewHttpError(fmt.Errorf(err.Error()), 404)
+	}
+
+	return ids, nil
 }

@@ -6,6 +6,7 @@ type IProfileService interface {
 	Save(profile types.ProfileHttpRequest) (uint64, error)
 	GetByID(id uint64) (*types.Profile, error)
 	GetAll() []types.Profile
+	AddProductRegistration(uint64, types.ProductRegistrationHttpRequest) ([]uint64, error)
 }
 
 type IProductService interface {
