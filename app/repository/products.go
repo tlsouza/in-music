@@ -51,11 +51,3 @@ func (r *ProductRepository) GetBySku(sku string) (*types.Product, error) {
 	}
 	return nil, errors.New("product not found")
 }
-
-// GetAll retrieves all Products
-func (r *ProductRepository) GetAll() []types.Product {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	return r.products
-}

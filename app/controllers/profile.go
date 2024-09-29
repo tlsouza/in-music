@@ -90,3 +90,24 @@ func (pc *profileController) CreateNewProductRegistration(requestData pgk_types.
 
 	return ids, nil
 }
+
+func (pc *profileController) GetProductRegistrationByProfileId(requestData pgk_types.RequestData) (interface{}, *errors.HttpError) {
+	id, ok := requestData.PathParams["profile"]
+	if !ok {
+		return nil, errors.NewHttpError(fmt.Errorf("invalid id in path"), 400)
+	}
+
+	intId, err := strconv.Atoi(id)
+
+	if err != nil {
+		return nil, errors.NewHttpError(fmt.Errorf("int id expected in path"), 400)
+	}
+
+	prs, err := pc.ps.GetProductRegistrationByProfileId(uint64(intId))
+
+	if err != nil {
+		return nil, errors.NewHttpError(fmt.Errorf(err.Error()), 404)
+	}
+
+	return prs, nil
+}

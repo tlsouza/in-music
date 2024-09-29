@@ -51,8 +51,3 @@ func (pc *productController) GetBySku(requestData pgk_types.RequestData) (interf
 	return product, nil
 
 }
-
-func (pc *productController) GetAll(requestData pgk_types.RequestData) (interface{}, *errors.HttpError) {
-	products := pc.ps.GetAll()
-	return products, nil
-}

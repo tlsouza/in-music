@@ -24,7 +24,3 @@ func (ps *productService) Save(product types.Product) (string, error) {
 func (ps *productService) GetBySku(sku string) (*types.Product, error) {
 	return ps.repo.GetBySku(sku)
 }
-
-func (ps *productService) GetAll() []types.Product {
-	return ps.repo.GetAll()
-}

@@ -33,16 +33,6 @@ func init() {
 		Controller:  productController.GetBySku,
 	}
 
-	var GetAllProducts = types.HttpServerPort{
-		SilentRoute: true,
-		Name:        "products",
-		Path:        "products",
-		Verb:        types.GET,
-		Adapter:     adapters.Fiber,
-		Controller:  productController.GetAll,
-	}
-
 	newProduct.Start()
 	GetProductBySku.Start()
-	GetAllProducts.Start()
 }

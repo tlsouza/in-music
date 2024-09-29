@@ -17,17 +17,6 @@ func NewProductRegistrationService(repo repository.IProductRegistrationRepositor
 	}
 }
 
-func (ps *productRegistrationService) GetByID(id uint64) (*types.ProductRegistrationHttpRes, error) {
-	parent, err := ps.repo.GetByID(id)
-	if err != nil {
-		return nil, errors.NewHttpError(fmt.Errorf("product not found: %d", id), 404)
-	}
-
-	child := ps.repo.GetByParentId(id)
-
-	return mapProductRegistrationToHttpResponse(*parent, child), nil
-}
-
 func (ps *productRegistrationService) GetBundle(id uint64) (*types.ProductRegistrationHttpRes, error) {
 	root, chilren := ps.repo.GetByBundle(id)
 	if root == nil {
@@ -57,27 +46,4 @@ func (ps *productRegistrationService) GetBundle(id uint64) (*types.ProductRegist
 
 func (ps *productRegistrationService) GetAll() []types.ProductRegistration {
 	return ps.repo.GetAll()
-}
-
-func mapProductRegistrationToHttpResponse(parent types.ProductRegistration, children []types.ProductRegistration) *types.ProductRegistrationHttpRes {
-	res := types.ProductRegistrationHttpRes{
-		Id:                             parent.Id,
-		PurchaseDate:                   parent.PurchaseDate,
-		ExpiryAt:                       parent.ExpiryAt,
-		Product:                        parent.Product,
-		SerialCode:                     parent.SerialCode,
-		AdditionalProductRegistrations: []types.ProductRegistrationHttpResChild{},
-	}
-	for _, v := range children {
-		res.AdditionalProductRegistrations = append(res.AdditionalProductRegistrations,
-			types.ProductRegistrationHttpResChild{
-				Id:           v.Id,
-				PurchaseDate: v.PurchaseDate,
-				ExpiryAt:     v.ExpiryAt,
-				Product:      v.Product,
-				SerialCode:   v.SerialCode,
-			})
-	}
-
-	return &res
 }

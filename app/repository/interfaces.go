@@ -11,7 +11,6 @@ type IProfileRepository interface {
 type IProductRepository interface {
 	Save(product types.Product) (string, error)
 	GetBySku(sku string) (*types.Product, error)
-	GetAll() []types.Product
 }
 
 type IProductRegistrationRepository interface {

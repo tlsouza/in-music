@@ -50,8 +50,18 @@ func init() {
 		Controller:  profileController.CreateNewProductRegistration,
 	}
 
+	var GetProductRegistrationsForProfile = types.HttpServerPort{
+		SilentRoute: true,
+		Name:        "product_registrations",
+		Path:        "profiles/:profile/product_registrations",
+		Verb:        types.GET,
+		Adapter:     adapters.Fiber,
+		Controller:  profileController.GetProductRegistrationByProfileId,
+	}
+
 	newProfile.Start()
 	GetProfileById.Start()
 	GetAllProfile.Start()
 	AddNewProductRegistrationsToProfile.Start()
+	GetProductRegistrationsForProfile.Start()
 }

@@ -40,19 +40,6 @@ func (r *ProductRegistrationRepository) Save(registration types.ProductRegistrat
 	return registration.Id, nil
 }
 
-func (r *ProductRegistrationRepository) SaveChildren(rootRegistrationId uint64, childrenRegistrations []types.ProductRegistration) ([]uint64, error) {
-	ids := []uint64{}
-	for _, v := range childrenRegistrations {
-		v.ParentId = &rootRegistrationId
-		childId, err := r.Save(v)
-		ids = append(ids, childId)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return ids, nil
-}
-
 func (r *ProductRegistrationRepository) GetByID(id uint64) (*types.ProductRegistration, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -120,4 +107,17 @@ func (r *ProductRegistrationRepository) GetByBundle(id uint64) (*types.ProductRe
 	}
 	return root, children
 
+}
+
+func (r *ProductRegistrationRepository) GetByProfile(id uint64) []types.ProductRegistration {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	pr := []types.ProductRegistration{}
+
+	for _, registration := range r.registrations {
+		if registration.ProfileId != nil && *registration.ProfileId == id {
+			pr = append(pr, registration)
+		}
+	}
+	return pr
 }
