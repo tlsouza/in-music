@@ -81,7 +81,7 @@ func (r *ProductRegistrationRepository) GetByProfileId(profileId uint64) ([]type
 	return result, nil
 }
 
-func (r *ProductRegistrationRepository) GetByParentId(parentId uint64) ([]types.ProductRegistration, error) {
+func (r *ProductRegistrationRepository) GetByParentId(parentId uint64) []types.ProductRegistration {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -91,10 +91,8 @@ func (r *ProductRegistrationRepository) GetByParentId(parentId uint64) ([]types.
 			result = append(result, registration)
 		}
 	}
-	if len(result) == 0 {
-		return nil, errors.New("no child product registrations found for the given parent id")
-	}
-	return result, nil
+
+	return result
 }
 
 func (r *ProductRegistrationRepository) GetAll() []types.ProductRegistration {
@@ -102,4 +100,24 @@ func (r *ProductRegistrationRepository) GetAll() []types.ProductRegistration {
 	defer r.mu.Unlock()
 
 	return r.registrations
+}
+
+func (r *ProductRegistrationRepository) GetByBundle(id uint64) (*types.ProductRegistration, []types.ProductRegistration) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	var root *types.ProductRegistration = nil
+	children := []types.ProductRegistration{}
+
+	for _, registration := range r.registrations {
+		if registration.Id == id {
+			root = &registration
+		}
+		if registration.RootId != nil {
+			if *registration.RootId == id {
+				children = append(children, registration)
+			}
+		}
+	}
+	return root, children
+
 }

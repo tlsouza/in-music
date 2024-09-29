@@ -76,7 +76,7 @@ func (pc *profileController) CreateNewProductRegistration(requestData pgk_types.
 		return nil, errors.NewHttpError(fmt.Errorf("int id expected in path"), 400)
 	}
 
-	productRegistrationRequest, err := logic.Unmarshal[types.ProductRegistrationHttpRequest](requestData.BodyByte, requestData.Ctx)
+	productRegistrationRequest, err := logic.Unmarshal[types.ProductRegistrationHttpReq](requestData.BodyByte, requestData.Ctx)
 
 	if err != nil {
 		return nil, errors.NewHttpError(fmt.Errorf("invalid body structure"), 400)
