@@ -104,7 +104,7 @@ func TestProductGetBySku(testDescribe *testing.T) {
 			&MockProductService{
 				GetBySkuFunc: func(s string) (*app_types.Product, error) {
 					return &app_types.Product{
-						SKU: stringPointer("XPTO"),
+						SKU: StringPointer("XPTO"),
 					}, nil
 				},
 			},
@@ -122,6 +122,6 @@ func TestProductGetBySku(testDescribe *testing.T) {
 	})
 }
 
-func stringPointer(s string) *string {
+func StringPointer(s string) *string {
 	return &s
 }
