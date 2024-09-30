@@ -50,7 +50,7 @@ type HttpServerPort struct {
 	Verb                   string
 	Validator              func(RequestData) *errors.HttpError
 	Controller             func(RequestData) (interface{}, *errors.HttpError)
-	Adapter                func(HttpServerPort)
+	Adapter                func(*HttpServerPort)
 	Name                   string
 	StatusCodeSuccessfully int
 	LogDisabled            bool
@@ -59,7 +59,7 @@ type HttpServerPort struct {
 	Doc                    *SwaggerRouteObject
 }
 
-func (port HttpServerPort) Start() {
+func (port *HttpServerPort) Start() {
 	logger := log.New(context.Background())
 
 	port.fill_defaults()

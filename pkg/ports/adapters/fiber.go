@@ -121,7 +121,7 @@ func createRequestData(ctx context.Context, c *fiber.Ctx) types.RequestData {
 	return requestData
 }
 
-var Fiber = func(port types.HttpServerPort) {
+var Fiber = func(port *types.HttpServerPort) {
 	var proxyController = func(c *fiber.Ctx) error {
 		newUuid, _ := uuid.NewV4()
 		requestId := newUuid.String()

@@ -8,6 +8,8 @@ import (
 	"api/pkg/ports/types"
 )
 
+var newProfile, getProfileById, getAllProfile, addNewProductRegistrationsToProfile, getProductRegistrationsForProfile types.HttpServerPort
+
 func init() {
 	profileController := controllers.NewProfileController(
 		services.NewProfileService(
@@ -16,7 +18,7 @@ func init() {
 			repository.GetProductRepositoryInstance(),
 		),
 	)
-	var newProfile = types.HttpServerPort{
+	newProfile = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "profiles",
 		Path:        "profiles",
@@ -25,7 +27,7 @@ func init() {
 		Controller:  profileController.CreateNewProfile,
 	}
 
-	var GetProfileById = types.HttpServerPort{
+	getProfileById = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "profiles",
 		Path:        "profiles/:id",
@@ -34,7 +36,7 @@ func init() {
 		Controller:  profileController.GetById,
 	}
 
-	var GetAllProfile = types.HttpServerPort{
+	getAllProfile = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "profiles",
 		Path:        "profiles",
@@ -43,7 +45,7 @@ func init() {
 		Controller:  profileController.GetAll,
 	}
 
-	var AddNewProductRegistrationsToProfile = types.HttpServerPort{
+	addNewProductRegistrationsToProfile = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "product_registrations",
 		Path:        "profiles/:profile/product_registrations",
@@ -52,7 +54,7 @@ func init() {
 		Controller:  profileController.CreateNewProductRegistration,
 	}
 
-	var GetProductRegistrationsForProfile = types.HttpServerPort{
+	getProductRegistrationsForProfile = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "product_registrations",
 		Path:        "profiles/:profile/product_registrations",
@@ -62,8 +64,8 @@ func init() {
 	}
 
 	newProfile.Start()
-	GetProfileById.Start()
-	GetAllProfile.Start()
-	AddNewProductRegistrationsToProfile.Start()
-	GetProductRegistrationsForProfile.Start()
+	getProfileById.Start()
+	getAllProfile.Start()
+	addNewProductRegistrationsToProfile.Start()
+	getProductRegistrationsForProfile.Start()
 }

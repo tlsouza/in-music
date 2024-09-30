@@ -45,7 +45,7 @@ func (pc *productController) GetBySku(requestData pgk_types.RequestData) (interf
 	product, err := pc.ps.GetBySku(sku)
 
 	if err != nil {
-		return nil, errors.NewHttpError(fmt.Errorf("product not fo0und"), 404)
+		return nil, errors.NewHttpError(fmt.Errorf("product not found"), 404)
 	}
 
 	return product, nil

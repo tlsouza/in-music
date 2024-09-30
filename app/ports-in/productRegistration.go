@@ -8,6 +8,8 @@ import (
 	"api/pkg/ports/types"
 )
 
+var getProductRegistrationById, geAlltProductRegistration types.HttpServerPort
+
 func init() {
 	productRegistrationController := controllers.NewProductRegistrationController(
 		services.NewProductRegistrationService(
@@ -15,7 +17,7 @@ func init() {
 		),
 	)
 
-	var GetProductRegistrationById = types.HttpServerPort{
+	getProductRegistrationById = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "productRegistration",
 		Path:        "product_registration/:id",
@@ -24,7 +26,7 @@ func init() {
 		Controller:  productRegistrationController.GetById,
 	}
 
-	var GeAlltProductRegistration = types.HttpServerPort{
+	geAlltProductRegistration = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "productRegistration",
 		Path:        "product_registration/",
@@ -33,7 +35,7 @@ func init() {
 		Controller:  productRegistrationController.GetAll,
 	}
 
-	GetProductRegistrationById.Start()
-	GeAlltProductRegistration.Start()
+	getProductRegistrationById.Start()
+	geAlltProductRegistration.Start()
 
 }

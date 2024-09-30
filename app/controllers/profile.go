@@ -31,7 +31,7 @@ func (pc *profileController) CreateNewProfile(requestData pgk_types.RequestData)
 	newProfileId, err := pc.ps.Save(profileHttpRequest)
 
 	if err != nil {
-		return nil, errors.NewHttpError(fmt.Errorf("unable to save Profile"), 500)
+		return nil, errors.NewHttpError(fmt.Errorf("unable to save profile"), 500)
 	}
 
 	return newProfileId, nil
@@ -52,7 +52,7 @@ func (pc *profileController) GetById(requestData pgk_types.RequestData) (interfa
 	profile, err := pc.ps.GetByID(uint64(intId))
 
 	if err != nil {
-		return nil, errors.NewHttpError(fmt.Errorf("profile not fo0und"), 404)
+		return nil, errors.NewHttpError(fmt.Errorf("profile not found"), 404)
 	}
 
 	return profile, nil

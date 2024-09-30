@@ -34,7 +34,7 @@ func (pc *productRegistrationController) GetById(requestData pgk_types.RequestDa
 	productRegistration, err := pc.ps.GetBundle(uint64(intId))
 
 	if err != nil {
-		return nil, errors.NewHttpError(fmt.Errorf("product not found"), 404)
+		return nil, errors.NewHttpError(fmt.Errorf("not found"), 404)
 	}
 
 	return productRegistration, nil

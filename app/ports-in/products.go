@@ -8,6 +8,8 @@ import (
 	"api/pkg/ports/types"
 )
 
+var newProduct, getProductBySku types.HttpServerPort
+
 func init() {
 	productController := controllers.NewProductController(
 		services.NewProductService(
@@ -15,7 +17,7 @@ func init() {
 		),
 	)
 
-	var newProduct = types.HttpServerPort{
+	newProduct = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "products",
 		Path:        "products",
@@ -24,7 +26,7 @@ func init() {
 		Controller:  productController.CreateNewProduct,
 	}
 
-	var GetProductBySku = types.HttpServerPort{
+	getProductBySku = types.HttpServerPort{
 		SilentRoute: true,
 		Name:        "products",
 		Path:        "products/:sku",
@@ -34,5 +36,5 @@ func init() {
 	}
 
 	newProduct.Start()
-	GetProductBySku.Start()
+	getProductBySku.Start()
 }
