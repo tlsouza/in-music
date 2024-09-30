@@ -8,12 +8,21 @@ import (
 )
 
 type profileService struct {
-	repo repository.IProfileRepository
+	profileRepo             repository.IProfileRepository
+	producRegistrationsRepo repository.IProductRegistrationRepository
+	productRepo             repository.IProductRepository
 }
 
-func NewProfileService(repo repository.IProfileRepository) *profileService {
+func NewProfileService(
+	profileRepo repository.IProfileRepository,
+	producRegistrationsRepo repository.IProductRegistrationRepository,
+	productRepo repository.IProductRepository,
+
+) *profileService {
 	return &profileService{
-		repo,
+		profileRepo,
+		producRegistrationsRepo,
+		productRepo,
 	}
 }
 
@@ -23,18 +32,18 @@ func (ps *profileService) Save(profile types.ProfileHttpRequest) (uint64, error)
 		Firstname: profile.Firstname,
 		Lastname:  profile.Lastname,
 	}
-	savedProfileId, err := ps.repo.Save(newProfile)
+	savedProfileId, err := ps.profileRepo.Save(newProfile)
 
 	return savedProfileId, err
 }
 
 func (ps *profileService) GetByID(id uint64) (*types.Profile, error) {
-	return ps.repo.GetByID(id)
+	return ps.profileRepo.GetByID(id)
 }
 
 func (ps *profileService) GetAll() []types.ProfileHttpResponse {
 	profilesHttpRes := []types.ProfileHttpResponse{}
-	profiles := ps.repo.GetAll()
+	profiles := ps.profileRepo.GetAll()
 
 	for _, profile := range profiles {
 		profileHttpRes := types.ProfileHttpResponse{
@@ -52,43 +61,41 @@ func (ps *profileService) GetAll() []types.ProfileHttpResponse {
 
 func (ps *profileService) AddProductRegistration(profileId uint64, productRegistration types.ProductRegistrationHttpReq) (uint64, error) {
 	// validate user
-	if _, err := ps.repo.GetByID(profileId); err != nil {
+	if _, err := ps.profileRepo.GetByID(profileId); err != nil {
 		return 0, errors.NewHttpError(fmt.Errorf("user not found"), 404)
 	}
 
 	//validate root Product
-	if err := ValidateProductRegistrationsProducts(productRegistration); err != nil {
+	if err := ps.validateProductRegistrationsProducts(productRegistration); err != nil {
 		return 0, errors.NewHttpError(err, 404)
 	}
 
-	rootId := saveProductRegistrationsProductRoot(productRegistration, profileId)
-	saveProductRegistrationsProductChildren(productRegistration.AdditionalProductRegistrations, profileId, rootId, rootId)
+	rootId := ps.saveProductRegistrationsProductRoot(productRegistration, profileId)
+	ps.saveProductRegistrationsProductChildren(productRegistration.AdditionalProductRegistrations, profileId, rootId, rootId)
 
 	return rootId, nil
 }
 
 func (ps *profileService) GetProductRegistrationByProfileId(profileId uint64) ([]types.ProductRegistrationHttpRes, error) {
 	// validate user
-	if _, err := ps.repo.GetByID(profileId); err != nil {
+	if _, err := ps.profileRepo.GetByID(profileId); err != nil {
 		return nil, errors.NewHttpError(fmt.Errorf("profile %d not found", profileId), 404)
 	}
-	pRepo := repository.GetProductRegistrationRepositoryInstance()
-	prs := pRepo.GetByProfile(profileId)
+
+	prs := ps.producRegistrationsRepo.GetByProfileId(profileId)
 
 	return TransformProductRegistrationsToHttpRes(prs), nil
 }
 
-func ValidateProductRegistrationsProducts(productRegistration types.ProductRegistrationHttpReq) error {
-	productRepo := repository.GetProductRepositoryInstance()
-
+func (ps *profileService) validateProductRegistrationsProducts(productRegistration types.ProductRegistrationHttpReq) error {
 	// Check if the product exists for the current request
-	if product, err := productRepo.GetBySku(*productRegistration.Product.SKU); err != nil || product == nil {
+	if product, err := ps.productRepo.GetBySku(*productRegistration.Product.SKU); err != nil || product == nil {
 		return errors.NewHttpError(fmt.Errorf("product %s not found", *productRegistration.Product.SKU), 404)
 	}
 
 	// Recursively validate products in the child registrations
 	for _, httpReqChild := range productRegistration.AdditionalProductRegistrations {
-		if err := ValidateProductRegistrationsProducts(httpReqChild); err != nil {
+		if err := ps.validateProductRegistrationsProducts(httpReqChild); err != nil {
 			return err
 		}
 	}
@@ -96,10 +103,8 @@ func ValidateProductRegistrationsProducts(productRegistration types.ProductRegis
 	return nil
 }
 
-func saveProductRegistrationsProductRoot(productRegistration types.ProductRegistrationHttpReq, profileId uint64) uint64 {
-	prRepo := repository.GetProductRegistrationRepositoryInstance()
-
-	newId, _ := prRepo.Save(types.ProductRegistration{
+func (ps *profileService) saveProductRegistrationsProductRoot(productRegistration types.ProductRegistrationHttpReq, profileId uint64) uint64 {
+	newId, _ := ps.producRegistrationsRepo.Save(types.ProductRegistration{
 		PurchaseDate: productRegistration.PurchaseDate,
 		ExpiryAt:     productRegistration.ExpiryAt,
 		Product:      productRegistration.Product,
@@ -113,11 +118,10 @@ func saveProductRegistrationsProductRoot(productRegistration types.ProductRegist
 
 }
 
-func saveProductRegistrationsProductChildren(productRegistration []types.ProductRegistrationHttpReq, profileId uint64, rootId uint64, parentId uint64) {
-	prRepo := repository.GetProductRegistrationRepositoryInstance()
+func (ps *profileService) saveProductRegistrationsProductChildren(productRegistration []types.ProductRegistrationHttpReq, profileId uint64, rootId uint64, parentId uint64) {
 
 	for _, v := range productRegistration {
-		newId, _ := prRepo.Save(types.ProductRegistration{
+		newId, _ := ps.producRegistrationsRepo.Save(types.ProductRegistration{
 			PurchaseDate: v.PurchaseDate,
 			ExpiryAt:     v.ExpiryAt,
 			Product:      v.Product,
@@ -126,7 +130,7 @@ func saveProductRegistrationsProductChildren(productRegistration []types.Product
 			ProfileId:    &profileId,
 			ParentId:     &parentId,
 		})
-		saveProductRegistrationsProductChildren(v.AdditionalProductRegistrations, profileId, rootId, newId)
+		ps.saveProductRegistrationsProductChildren(v.AdditionalProductRegistrations, profileId, rootId, newId)
 	}
 
 }

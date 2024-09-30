@@ -52,22 +52,6 @@ func (r *ProductRegistrationRepository) GetByID(id uint64) (*types.ProductRegist
 	return nil, errors.New("product registration not found")
 }
 
-func (r *ProductRegistrationRepository) GetByProfileId(profileId uint64) ([]types.ProductRegistration, error) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	var result []types.ProductRegistration
-	for _, registration := range r.registrations {
-		if registration.ProfileId != nil && *registration.ProfileId == profileId && registration.ParentId == nil {
-			result = append(result, registration)
-		}
-	}
-	if len(result) == 0 {
-		return nil, errors.New("no product registrations found for the given profile id")
-	}
-	return result, nil
-}
-
 func (r *ProductRegistrationRepository) GetByParentId(parentId uint64) []types.ProductRegistration {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -109,7 +93,7 @@ func (r *ProductRegistrationRepository) GetByBundle(id uint64) (*types.ProductRe
 
 }
 
-func (r *ProductRegistrationRepository) GetByProfile(id uint64) []types.ProductRegistration {
+func (r *ProductRegistrationRepository) GetByProfileId(id uint64) []types.ProductRegistration {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	pr := []types.ProductRegistration{}

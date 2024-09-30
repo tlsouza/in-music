@@ -12,6 +12,8 @@ func init() {
 	profileController := controllers.NewProfileController(
 		services.NewProfileService(
 			repository.GetProfileRepositoryInstance(),
+			repository.GetProductRegistrationRepositoryInstance(),
+			repository.GetProductRepositoryInstance(),
 		),
 	)
 	var newProfile = types.HttpServerPort{

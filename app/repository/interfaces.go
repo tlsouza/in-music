@@ -17,7 +17,7 @@ type IProductRegistrationRepository interface {
 	Save(registration types.ProductRegistration) (uint64, error)
 	GetByID(id uint64) (*types.ProductRegistration, error)
 	GetByBundle(id uint64) (*types.ProductRegistration, []types.ProductRegistration)
-	GetByProfileId(profileId uint64) ([]types.ProductRegistration, error)
+	GetByProfileId(profileId uint64) []types.ProductRegistration
 	GetByParentId(parentId uint64) []types.ProductRegistration
 	GetAll() []types.ProductRegistration
 }
